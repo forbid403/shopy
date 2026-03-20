@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import toast from 'react-hot-toast'
 import { fetchCart, addToCart, updateCartItem, removeCartItem } from '../services/api'
 import type { Product, CartItem } from '../types'
 
@@ -38,9 +39,10 @@ export function useCart() {
         if (exists) return prev.map((i) => (i._id === data._id ? data : i))
         return [...prev, data]
       })
+      toast.success(`${product.name} added to cart`)
       return true
     } catch {
-      setError('Failed to add item to cart.')
+      toast.error('Failed to add item to cart')
       return false
     }
   }
@@ -55,7 +57,7 @@ export function useCart() {
       const { data } = await updateCartItem(id, quantity)
       setCartItems((prev) => prev.map((i) => (i._id === id ? data : i)))
     } catch {
-      setError('Failed to update quantity.')
+      toast.error('Failed to update quantity')
     }
   }
 
@@ -63,8 +65,9 @@ export function useCart() {
     try {
       await removeCartItem(id)
       setCartItems((prev) => prev.filter((i) => i._id !== id))
+      toast.success('Item removed')
     } catch {
-      setError('Failed to remove item.')
+      toast.error('Failed to remove item')
     }
   }
 
