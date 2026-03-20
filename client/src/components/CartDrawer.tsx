@@ -1,6 +1,23 @@
 import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react'
+import type { CartItem } from '../types'
 
-export default function CartDrawer({ open, onClose, cartItems, onUpdateQuantity, onRemove, total }) {
+interface CartDrawerProps {
+  open: boolean
+  onClose: () => void
+  cartItems: CartItem[]
+  onUpdateQuantity: (id: string, quantity: number) => void
+  onRemove: (id: string) => void
+  total: number
+}
+
+export default function CartDrawer({
+  open,
+  onClose,
+  cartItems,
+  onUpdateQuantity,
+  onRemove,
+  total,
+}: CartDrawerProps) {
   return (
     <>
       <div

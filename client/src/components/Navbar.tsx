@@ -1,6 +1,11 @@
 import { ShoppingCart } from 'lucide-react'
 
-export default function Navbar({ itemCount, onCartOpen }) {
+interface NavbarProps {
+  itemCount: number
+  onCartOpen: () => void
+}
+
+export default function Navbar({ itemCount, onCartOpen }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">

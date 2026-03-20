@@ -1,12 +1,12 @@
-import express from 'express'
+import { Router, Request, Response } from 'express'
 import Product from '../models/Product.js'
 
-const router = express.Router()
+const router = Router()
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
-    const { category, search } = req.query
-    const filter = {}
+    const { category, search } = req.query as Record<string, string>
+    const filter: Record<string, unknown> = {}
     if (category && category !== 'All') filter.category = category
     if (search) filter.name = { $regex: search, $options: 'i' }
     const products = await Product.find(filter)
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/seed', async (req, res) => {
+router.post('/seed', async (_req: Request, res: Response) => {
   try {
     await Product.deleteMany({})
     const products = [

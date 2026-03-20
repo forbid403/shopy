@@ -1,7 +1,13 @@
 import { useState } from 'react'
 import { ShoppingCart, Check } from 'lucide-react'
+import type { Product } from '../types'
 
-export default function ProductCard({ product, onAddToCart }) {
+interface ProductCardProps {
+  product: Product
+  onAddToCart: (product: Product) => Promise<boolean>
+}
+
+export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [added, setAdded] = useState(false)
   const [loading, setLoading] = useState(false)
 

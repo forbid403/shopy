@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { fetchCart, addToCart, updateCartItem, removeCartItem } from '../services/api'
+import type { Product, CartItem } from '../types'
 
 export function useCart() {
-  const [cartItems, setCartItems] = useState([])
+  const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -23,7 +24,7 @@ export function useCart() {
     load()
   }, [load])
 
-  const addItem = async (product) => {
+  const addItem = async (product: Product): Promise<boolean> => {
     try {
       const { data } = await addToCart({
         productId: product._id,
@@ -44,7 +45,7 @@ export function useCart() {
     }
   }
 
-  const updateQuantity = async (id, quantity) => {
+  const updateQuantity = async (id: string, quantity: number) => {
     try {
       if (quantity < 1) {
         await removeCartItem(id)
@@ -58,7 +59,7 @@ export function useCart() {
     }
   }
 
-  const removeItem = async (id) => {
+  const removeItem = async (id: string) => {
     try {
       await removeCartItem(id)
       setCartItems((prev) => prev.filter((i) => i._id !== id))

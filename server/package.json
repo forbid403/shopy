@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "tsx watch index.ts",
+    "start": "tsx index.ts"
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -13,6 +13,10 @@
     "mongoose": "^9.3.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "@types/cors": "^2.8.19",
+    "@types/node": "^25.5.0",
+    "nodemon": "^3.1.14",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }

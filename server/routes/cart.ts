@@ -1,9 +1,9 @@
-import express from 'express'
+import { Router, Request, Response } from 'express'
 import CartItem from '../models/Cart.js'
 
-const router = express.Router()
+const router = Router()
 
-router.get('/', async (req, res) => {
+router.get('/', async (_req: Request, res: Response) => {
   try {
     const items = await CartItem.find()
     res.json(items)
@@ -12,25 +12,31 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request, res: Response) => {
   try {
-    const { productId, name, price, image, quantity } = req.body
+    const { productId, name, price, image, quantity } = req.body as {
+      productId: string
+      name: string
+      price: number
+      image: string
+      quantity?: number
+    }
     const existing = await CartItem.findOne({ productId })
     if (existing) {
-      existing.quantity += quantity || 1
+      existing.quantity += quantity ?? 1
       await existing.save()
       return res.json(existing)
     }
-    const item = await CartItem.create({ productId, name, price, image, quantity: quantity || 1 })
+    const item = await CartItem.create({ productId, name, price, image, quantity: quantity ?? 1 })
     res.status(201).json(item)
   } catch {
     res.status(500).json({ message: 'Failed to add to cart' })
   }
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req: Request<{ id: string }>, res: Response) => {
   try {
-    const { quantity } = req.body
+    const { quantity } = req.body as { quantity: number }
     if (quantity < 1) {
       await CartItem.findByIdAndDelete(req.params.id)
       return res.json({ deleted: true })
@@ -43,7 +49,7 @@ router.put('/:id', async (req, res) => {
   }
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req: Request<{ id: string }>, res: Response) => {
   try {
     await CartItem.findByIdAndDelete(req.params.id)
     res.json({ message: 'Item removed' })
