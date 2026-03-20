@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Toaster } from 'react-hot-toast'
 import Navbar from './components/Navbar'
 import ProductCard from './components/ProductCard'
 import CartDrawer from './components/CartDrawer'
@@ -15,6 +16,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Toaster position="bottom-right" toastOptions={{ duration: 2000 }} />
       <Navbar itemCount={itemCount} onCartOpen={() => setCartOpen(true)} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
