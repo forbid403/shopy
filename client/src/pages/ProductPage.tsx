@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, ShoppingCart, Check, Package, Heart, Truck, Shield } from 'lucide-react'
 import { fetchProduct } from '../services/api'
+import { handleImageError } from '../utils/fallbackImage'
 import { useCartContext } from '../contexts/CartContext'
 import { useFavoritesContext } from '../contexts/FavoritesContext'
 import type { Product } from '../types'
@@ -90,6 +91,7 @@ export default function ProductPage() {
             <img
               src={product.image}
               alt={product.name}
+              onError={handleImageError}
               className="w-full h-full object-cover"
             />
           </div>
