@@ -12,45 +12,57 @@
 - [x] Category filter + search bar
 - [x] Skeleton loading UI
 - [x] Error state UI
+- [x] Toast notifications (react-hot-toast)
+- [x] Server-side request validation + ObjectId validation
+- [x] `VITE_API_URL` env var for production API base URL
 
 ---
 
 ## Remaining Tasks
 
-### 1. UX Polish
-- [ ] Toast notification when item is added to cart (e.g. react-hot-toast)
-- [ ] Optimistic UI update on quantity change (no lag feel)
-- [ ] Animate cart item count badge on change
-- [ ] "Back to top" scroll behavior after filter change
+### 1. UX Polish (Rubric: Presentation & UX — 10pts)
+- [x] Optimistic UI update on quantity change (no visible lag)
+- [x] Animate cart item count badge on change (scale bounce)
+- [x] Scroll to top on category/filter change
+- [x] Add keyboard accessibility: focus rings, Escape to close cart drawer
+- [x] Ensure sufficient color contrast ratios (text vs background)
+- [x] Add subtle transitions: product grid items fade-in on load
 
-### 2. Cart Improvements
-- [ ] Show cart error inline inside CartDrawer (not just hook state)
-- [ ] Disable checkout button (placeholder — no payment flow needed)
+### 2. Cart Improvements (Rubric: Business Logic — 10pts)
+- [ ] Show cart-specific error messages inline in CartDrawer
+- [ ] Disable or label checkout button as placeholder (no payment flow)
+- [ ] Show item subtotals and item count summary in cart footer
 
-### 3. Server Hardening
-- [ ] Validate request body fields in cart routes (missing fields → 400)
-- [ ] Validate ObjectId format before DB query (invalid id → 400)
+### 3. Deployment (Rubric: indirect — needed for demo)
+- [ ] Set up MongoDB Atlas free cluster
+- [ ] Deploy server to Render (env vars: `MONGO_URI`, `PORT`)
+- [ ] Deploy client to Vercel (env var: `VITE_API_URL`)
+- [ ] Verify all CRUD operations work end-to-end on deployed app
 
-### 4. Deployment
-- [ ] Set up MongoDB Atlas free cluster, export connection string
-- [ ] Deploy server to Render (free plan, Node environment)
-  - Set env vars: `MONGO_URI`, `PORT`
-- [ ] Deploy client to Vercel
-  - Set env var or hardcode Render server URL via `VITE_API_URL`
-  - Update `vite.config.ts` proxy → use `VITE_API_URL` in `api.ts` for production
-- [ ] Verify all CRUD operations work on deployed app
+### 4. Database Export (Rubric: submission requirement)
+- [ ] Export seed data as `database/products.json`
 
-### 5. Database Export
-- [ ] Export seed data as `database/products.json` for submission
-
-### 6. README
-- [ ] Project title + problem summary
-- [ ] Tech stack table (frontend / styling / routing / data / deployment)
+### 5. README (Rubric: README — 6pts)
+- [ ] Project title
+- [ ] Problem summary (what this app solves)
+- [ ] Tech stack breakdown (frontend, styling, routing, data, deployment)
 - [ ] Feature list (bullet points)
 - [ ] Folder structure diagram
-- [ ] Challenges section (4–5 sentences)
+- [ ] Challenges overcome (4-5 sentences)
 
 ---
+
+## Rubric Checklist
+
+| Criteria | Points | Status |
+|---|---|---|
+| Single-Page Application | 3 | Done — one index.html, React SPA |
+| All CRUD Operations | 4 | Done — POST/GET/PUT/DELETE on cart |
+| Business Logic | 10 | Mostly done, minor polish needed |
+| Presentation & UX | 10 | Core done, needs accessibility + animations |
+| README | 6 | Not started |
+| Code Quality | 6 | Good — organized folders, validation, error handling |
+| In-person Q&A | 1 | N/A (in tutorial) |
 
 ## Deployment Architecture
 
@@ -63,8 +75,8 @@ Browser
 
 ## Priority Order
 
-1. Toast notifications (UX — rubric: interaction feedback)
-2. Server validation (rubric: error handling & security)
-3. Deployment setup
-4. Database export
-5. README
+1. **README** (6pts, currently 0 — highest ROI)
+2. **UX polish** (animations, accessibility — rubric explicitly checks these)
+3. **Database export** (submission requirement)
+4. **Deployment** (needed for demo)
+5. **Cart improvements** (minor business logic polish)

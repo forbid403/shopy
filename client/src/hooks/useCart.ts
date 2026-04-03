@@ -48,15 +48,22 @@ export function useCart() {
   }
 
   const updateQuantity = async (id: string, quantity: number) => {
-    try {
-      if (quantity < 1) {
+    const prev = cartItems
+    if (quantity < 1) {
+      setCartItems((items) => items.filter((i) => i._id !== id))
+      try {
         await removeCartItem(id)
-        setCartItems((prev) => prev.filter((i) => i._id !== id))
-        return
+      } catch {
+        setCartItems(prev)
+        toast.error('Failed to update quantity')
       }
-      const { data } = await updateCartItem(id, quantity)
-      setCartItems((prev) => prev.map((i) => (i._id === id ? data : i)))
+      return
+    }
+    setCartItems((items) => items.map((i) => (i._id === id ? { ...i, quantity } : i)))
+    try {
+      await updateCartItem(id, quantity)
     } catch {
+      setCartItems(prev)
       toast.error('Failed to update quantity')
     }
   }
