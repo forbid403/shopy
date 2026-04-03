@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingCart, Heart } from 'lucide-react'
+import { ShoppingCart, Heart, Settings } from 'lucide-react'
 
 interface NavbarProps {
   itemCount: number
@@ -28,6 +28,13 @@ export default function Navbar({ itemCount, favoriteCount, onCartOpen }: NavbarP
           <span className="text-2xl font-bold tracking-tight text-gray-900">shopy</span>
         </Link>
         <div className="flex items-center gap-3">
+          <Link
+            to="/manage"
+            className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            <Settings size={18} />
+            <span className="hidden sm:inline">Manage</span>
+          </Link>
           <Link
             to="/favorites"
             className="relative flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
