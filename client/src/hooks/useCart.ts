@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import toast from 'react-hot-toast'
-import { fetchCart, addToCart, updateCartItem, removeCartItem } from '../services/api'
+import { fetchCart, addToCart, updateCartItem, removeCartItem, checkout } from '../services/api'
 import type { Product, CartItem } from '../types'
 
 export function useCart() {
@@ -78,8 +78,19 @@ export function useCart() {
     }
   }
 
+  const placeOrder = async (): Promise<boolean> => {
+    try {
+      await checkout()
+      setCartItems([])
+      return true
+    } catch {
+      toast.error('Checkout failed')
+      return false
+    }
+  }
+
   const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0)
   const itemCount = cartItems.reduce((sum, i) => sum + i.quantity, 0)
 
-  return { cartItems, loading, error, addItem, updateQuantity, removeItem, total, itemCount }
+  return { cartItems, loading, error, addItem, updateQuantity, removeItem, placeOrder, total, itemCount }
 }
