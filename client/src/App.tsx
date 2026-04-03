@@ -1,18 +1,39 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Toaster } from 'react-hot-toast'
 import Navbar from './components/Navbar'
 import ProductCard from './components/ProductCard'
 import CartDrawer from './components/CartDrawer'
 import { useProducts } from './hooks/useProducts'
 import { useCart } from './hooks/useCart'
-import { Search } from 'lucide-react'
+import { Search, Loader2 } from 'lucide-react'
 
 const CATEGORIES = ['All', 'Electronics', 'Sports', 'Home', 'Accessories']
 
 export default function App() {
   const [cartOpen, setCartOpen] = useState(false)
-  const { products, loading, error, category, setCategory, search, setSearch } = useProducts()
-  const { cartItems, addItem, updateQuantity, removeItem, total, itemCount } = useCart()
+  const { products, loading, loadingMore, error, category, setCategory, search, setSearch, hasMore, total, loadMore } = useProducts()
+  const { cartItems, addItem, updateQuantity, removeItem, total: cartTotal, itemCount } = useCart()
+
+  const sentinelRef = useRef<HTMLDivElement>(null)
+  const loadMoreRef = useRef(loadMore)
+  loadMoreRef.current = loadMore
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [category, search])
+
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMoreRef.current()
+      },
+      { rootMargin: '200px' },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -23,7 +44,7 @@ export default function App() {
         <div className="mb-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Products</h1>
-            <p className="text-gray-500 text-sm mt-1">{products.length} items available</p>
+            <p className="text-gray-600 text-sm mt-1">{total} items available</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
@@ -77,17 +98,27 @@ export default function App() {
             ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-gray-400">
+          <div className="flex flex-col items-center justify-center py-24 text-gray-500">
             <p className="text-lg font-medium">No products found</p>
             <p className="text-sm mt-1">Try adjusting your search or filter</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {products.map((product) => (
-              <ProductCard key={product._id} product={product} onAddToCart={addItem} />
+            {products.map((product, i) => (
+              <div key={product._id} className="animate-fade-in-up" style={{ animationDelay: `${(i % 12) * 50}ms` }}>
+                <ProductCard product={product} onAddToCart={addItem} />
+              </div>
             ))}
           </div>
         )}
+
+        {loadingMore && (
+          <div className="flex justify-center py-8">
+            <Loader2 size={24} className="animate-spin text-gray-400" />
+          </div>
+        )}
+
+        <div ref={sentinelRef} className="h-1" />
       </main>
 
       <CartDrawer
@@ -96,7 +127,7 @@ export default function App() {
         cartItems={cartItems}
         onUpdateQuantity={updateQuantity}
         onRemove={removeItem}
-        total={total}
+        total={cartTotal}
       />
     </div>
   )

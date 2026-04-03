@@ -1,10 +1,10 @@
 import axios from 'axios'
-import type { Product, CartItem } from '../types'
+import type { ProductsResponse, CartItem } from '../types'
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL ?? '/api' })
 
 export const fetchProducts = (params?: Record<string, string>) =>
-  api.get<Product[]>('/products', { params })
+  api.get<ProductsResponse>('/products', { params })
 
 export const seedProducts = () => api.post('/products/seed')
 
