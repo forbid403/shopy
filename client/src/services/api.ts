@@ -10,6 +10,19 @@ export const fetchProducts = (params?: Record<string, string>) =>
 
 export const fetchProduct = (id: string) => api.get<Product>(`/products/${id}`)
 
+export const createProduct = (data: Omit<Product, '_id'>) => api.post<Product>('/products', data)
+
+export const updateProduct = (id: string, data: Partial<Omit<Product, '_id'>>) =>
+  api.put<Product>(`/products/${id}`, data)
+
+export const deleteProduct = (id: string) => api.delete(`/products/${id}`)
+
+export const uploadImage = (file: File) => {
+  const form = new FormData()
+  form.append('image', file)
+  return api.post<{ url: string }>('/upload', form)
+}
+
 export const seedProducts = () => api.post('/products/seed')
 
 export const fetchCart = () => api.get<CartItem[]>('/cart')

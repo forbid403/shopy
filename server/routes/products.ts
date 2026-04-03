@@ -1,7 +1,12 @@
 import { Router, Request, Response } from 'express'
+import mongoose from 'mongoose'
 import Product from '../models/Product.js'
 
 const router = Router()
+
+function isValidId(id: string) {
+  return mongoose.Types.ObjectId.isValid(id)
+}
 
 router.get('/', async (req: Request, res: Response) => {
   try {
@@ -40,6 +45,74 @@ router.get('/:id', async (req: Request, res: Response) => {
     res.json(product)
   } catch {
     res.status(500).json({ message: 'Failed to fetch product' })
+  }
+})
+
+router.post('/', async (req: Request, res: Response) => {
+  try {
+    const { name, price, image, category, description, stock } = req.body as {
+      name?: string
+      price?: number
+      image?: string
+      category?: string
+      description?: string
+      stock?: number
+    }
+
+    if (!name || price === undefined || !image || !category) {
+      return res.status(400).json({ message: 'name, price, image, and category are required' })
+    }
+
+    if (typeof price !== 'number' || price < 0) {
+      return res.status(400).json({ message: 'price must be a non-negative number' })
+    }
+
+    const product = await Product.create({ name, price, image, category, description: description ?? '', stock: stock ?? 99 })
+    res.status(201).json(product)
+  } catch {
+    res.status(500).json({ message: 'Failed to create product' })
+  }
+})
+
+router.put('/:id', async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    if (!isValidId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid id' })
+    }
+
+    const { name, price, image, category, description, stock } = req.body as {
+      name?: string
+      price?: number
+      image?: string
+      category?: string
+      description?: string
+      stock?: number
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      { name, price, image, category, description, stock },
+      { new: true, runValidators: true },
+    )
+
+    if (!product) return res.status(404).json({ message: 'Product not found' })
+    res.json(product)
+  } catch {
+    res.status(500).json({ message: 'Failed to update product' })
+  }
+})
+
+router.delete('/:id', async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    if (!isValidId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid id' })
+    }
+
+    const product = await Product.findByIdAndDelete(req.params.id)
+    if (!product) return res.status(404).json({ message: 'Product not found' })
+    res.json({ message: 'Product deleted' })
+  } catch {
+    res.status(500).json({ message: 'Failed to delete product' })
   }
 })
 
