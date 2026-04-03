@@ -8,6 +8,13 @@ export interface Product {
   stock: number
 }
 
+export interface ProductsResponse {
+  products: Product[]
+  page: number
+  totalPages: number
+  total: number
+}
+
 export interface CartItem {
   _id: string
   productId: string

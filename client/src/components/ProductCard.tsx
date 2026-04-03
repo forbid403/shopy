@@ -37,7 +37,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
         <h3 className="mt-2 text-gray-900 font-semibold text-sm leading-tight line-clamp-2">
           {product.name}
         </h3>
-        <p className="mt-1 text-xs text-gray-500 line-clamp-2">{product.description}</p>
+        <p className="mt-1 text-xs text-gray-600 line-clamp-2">{product.description}</p>
         <div className="mt-3 flex items-center justify-between">
           <span className="text-lg font-bold text-gray-900">${product.price.toFixed(2)}</span>
           <button
@@ -50,7 +50,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
             } disabled:opacity-60`}
           >
             {added ? <Check size={14} /> : <ShoppingCart size={14} />}
-            {added ? 'Added' : 'Add to cart'}
+            <span className="hidden sm:inline">{added ? 'Added' : 'Add to cart'}</span>
           </button>
         </div>
       </div>
