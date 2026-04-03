@@ -30,6 +30,19 @@ router.get('/', async (req: Request, res: Response) => {
   }
 })
 
+router.get('/:id', async (req: Request, res: Response) => {
+  try {
+    const product = await Product.findById(req.params.id)
+    if (!product) {
+      res.status(404).json({ message: 'Product not found' })
+      return
+    }
+    res.json(product)
+  } catch {
+    res.status(500).json({ message: 'Failed to fetch product' })
+  }
+})
+
 router.post('/seed', async (_req: Request, res: Response) => {
   try {
     await Product.deleteMany({})
