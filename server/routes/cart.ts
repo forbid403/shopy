@@ -91,4 +91,17 @@ router.delete('/:id', async (req: Request<{ id: string }>, res: Response) => {
   }
 })
 
+router.post('/checkout', async (_req: Request, res: Response) => {
+  try {
+    const count = await CartItem.countDocuments()
+    if (count === 0) {
+      return res.status(400).json({ message: 'Cart is empty' })
+    }
+    await CartItem.deleteMany({})
+    res.json({ message: 'Order placed successfully' })
+  } catch {
+    res.status(500).json({ message: 'Checkout failed' })
+  }
+})
+
 export default router

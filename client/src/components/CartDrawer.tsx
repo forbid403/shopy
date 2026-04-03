@@ -1,11 +1,13 @@
 import { useEffect } from 'react'
-import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { X, Trash2, Plus, Minus, ShoppingBag, AlertCircle } from 'lucide-react'
 import type { CartItem } from '../types'
 
 interface CartDrawerProps {
   open: boolean
   onClose: () => void
   cartItems: CartItem[]
+  error: string | null
   onUpdateQuantity: (id: string, quantity: number) => void
   onRemove: (id: string) => void
   total: number
@@ -15,10 +17,13 @@ export default function CartDrawer({
   open,
   onClose,
   cartItems,
+  error,
   onUpdateQuantity,
   onRemove,
   total,
 }: CartDrawerProps) {
+  const navigate = useNavigate()
+
   useEffect(() => {
     if (!open) return
     const handleKey = (e: KeyboardEvent) => {
@@ -27,6 +32,13 @@ export default function CartDrawer({
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
   }, [open, onClose])
+
+  const itemCount = cartItems.reduce((sum, i) => sum + i.quantity, 0)
+
+  const handleCheckout = () => {
+    onClose()
+    navigate('/checkout')
+  }
 
   return (
     <>
@@ -52,6 +64,13 @@ export default function CartDrawer({
             <X size={20} />
           </button>
         </div>
+
+        {error && (
+          <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm">
+            <AlertCircle size={16} className="shrink-0" />
+            {error}
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto px-6 py-4">
           {cartItems.length === 0 ? (
@@ -106,11 +125,18 @@ export default function CartDrawer({
 
         {cartItems.length > 0 && (
           <div className="px-6 py-4 border-t border-gray-100 space-y-3">
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>{itemCount} {itemCount === 1 ? 'item' : 'items'}</span>
+              <span>${total.toFixed(2)}</span>
+            </div>
             <div className="flex justify-between text-base font-semibold text-gray-900">
               <span>Total</span>
               <span>${total.toFixed(2)}</span>
             </div>
-            <button className="w-full py-3 bg-gray-900 text-white rounded-full font-medium hover:bg-indigo-600 transition-colors">
+            <button
+              onClick={handleCheckout}
+              className="w-full py-3 bg-gray-900 text-white rounded-full font-medium hover:bg-indigo-600 transition-colors"
+            >
               Checkout
             </button>
           </div>

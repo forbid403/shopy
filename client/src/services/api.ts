@@ -21,6 +21,8 @@ export const updateCartItem = (id: string, quantity: number) =>
 
 export const removeCartItem = (id: string) => api.delete(`/cart/${id}`)
 
+export const checkout = () => api.post('/cart/checkout')
+
 export const fetchFavorites = () => api.get<string[]>('/favorites')
 
 export const fetchFavoriteProducts = () => api.get<Product[]>('/favorites/products')
