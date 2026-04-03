@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { X, Trash2, Plus, Minus, ShoppingBag, AlertCircle } from 'lucide-react'
+import { handleImageError } from '../utils/fallbackImage'
 import type { CartItem } from '../types'
 
 interface CartDrawerProps {
@@ -85,6 +86,7 @@ export default function CartDrawer({
                   <img
                     src={item.image}
                     alt={item.name}
+                    onError={handleImageError}
                     className="w-16 h-16 object-cover rounded-xl bg-gray-50 shrink-0"
                   />
                   <div className="flex-1 min-w-0">

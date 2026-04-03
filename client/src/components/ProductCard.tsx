@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ShoppingCart, Check, Heart } from 'lucide-react'
+import { handleImageError } from '../utils/fallbackImage'
 import type { Product } from '../types'
 
 interface ProductCardProps {
@@ -39,6 +40,7 @@ export default function ProductCard({ product, onAddToCart, onClick, isFavorite,
         <img
           src={product.image}
           alt={product.name}
+          onError={handleImageError}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <button
