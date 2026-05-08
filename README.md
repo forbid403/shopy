@@ -102,6 +102,13 @@ project/
 
 6. Open `http://localhost:5173` in your browser
 
+## Team
+
+| Member | GitHub |
+|--------|--------|
+| forbid403 | [@forbid403](https://github.com/forbid403) |
+| noey-bing | [@noey-bing](https://github.com/noey-bing) |
+
 ## Challenges Overcome
 
 Building the cart state management across multiple pages required lifting the state into a React Context so that the Navbar badge, CartDrawer, and Checkout page all stay in sync without redundant API calls. The same pattern was applied to the favorites feature. Implementing infinite scroll with an IntersectionObserver required careful ref management to avoid stale closure issues with the loadMore callback. Handling image uploads involved coordinating multer on the server with a FormData request from the client, and setting up Vite's dev proxy to forward both `/api` and `/uploads` paths to the backend so uploaded images render correctly during development.
