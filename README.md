@@ -162,7 +162,7 @@ After seeding, create an account then manually set `role: "admin"` in MongoDB, o
 |--------|--------|-----------------|
 | forbid403 | [@forbid403](https://github.com/forbid403) | Authentication backend + frontend |
 | noey-bing | [@noey-bing](https://github.com/noey-bing) | Cart ownership, favorites, admin dashboard |
-| [member3] | [@member3](https://github.com/member3) | Orders, profile, routing, README, DB export |
+| CokanZero | [@CokanZero](https://github.com/CokanZero) | Orders, profile, routing, README, DB export |
 
 ### forbid403
 
@@ -192,7 +192,7 @@ After seeding, create an account then manually set `role: "admin"` in MongoDB, o
 | `client/src/hooks/useCart.ts` | Cart hook update for auth |
 | `client/src/contexts/CartContext.tsx` | Cart context update for auth |
 
-### [member3]
+### CokanZero
 
 | File | Description |
 |------|-------------|
