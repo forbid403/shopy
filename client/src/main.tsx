@@ -8,25 +8,42 @@ import ProductPage from './pages/ProductPage'
 import FavoritesPage from './pages/FavoritesPage'
 import CheckoutPage from './pages/CheckoutPage'
 import ManageProductsPage from './pages/ManageProductsPage'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
 import { CartProvider } from './contexts/CartContext'
 import { FavoritesProvider } from './contexts/FavoritesContext'
+import { AuthProvider } from './contexts/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <CartProvider>
-        <FavoritesProvider>
-          <Routes>
-            <Route element={<App />}>
-              <Route index element={<HomePage />} />
-              <Route path="/products/:id" element={<ProductPage />} />
-              <Route path="/favorites" element={<FavoritesPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/manage" element={<ManageProductsPage />} />
-            </Route>
-          </Routes>
-        </FavoritesProvider>
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <FavoritesProvider>
+            <Routes>
+              <Route element={<App />}>
+                <Route index element={<HomePage />} />
+                <Route path="/products/:id" element={<ProductPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route
+                  path="/favorites"
+                  element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>}
+                />
+                <Route
+                  path="/checkout"
+                  element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>}
+                />
+                <Route
+                  path="/manage"
+                  element={<ProtectedRoute adminOnly><ManageProductsPage /></ProtectedRoute>}
+                />
+              </Route>
+            </Routes>
+          </FavoritesProvider>
+        </CartProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 )

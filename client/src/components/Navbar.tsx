@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { ShoppingCart, Heart, Settings } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { ShoppingCart, Heart, Settings, User, LogOut, LayoutDashboard } from 'lucide-react'
+import { useAuthContext } from '../contexts/AuthContext'
 
 interface NavbarProps {
   itemCount: number
@@ -11,6 +12,8 @@ interface NavbarProps {
 export default function Navbar({ itemCount, favoriteCount, onCartOpen }: NavbarProps) {
   const [bounce, setBounce] = useState(false)
   const prevCount = useRef(itemCount)
+  const { user, logout, isAdmin } = useAuthContext()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (itemCount !== prevCount.current) {
@@ -21,6 +24,11 @@ export default function Navbar({ itemCount, favoriteCount, onCartOpen }: NavbarP
     }
   }, [itemCount])
 
+  function handleLogout() {
+    logout()
+    navigate('/')
+  }
+
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -28,13 +36,24 @@ export default function Navbar({ itemCount, favoriteCount, onCartOpen }: NavbarP
           <span className="text-2xl font-bold tracking-tight text-gray-900">shopy</span>
         </Link>
         <div className="flex items-center gap-3">
-          <Link
-            to="/manage"
-            className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
-          >
-            <Settings size={18} />
-            <span className="hidden sm:inline">Manage</span>
-          </Link>
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+            >
+              <LayoutDashboard size={18} />
+              <span className="hidden sm:inline">Admin</span>
+            </Link>
+          )}
+          {isAdmin && (
+            <Link
+              to="/manage"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+            >
+              <Settings size={18} />
+              <span className="hidden sm:inline">Manage</span>
+            </Link>
+          )}
           <Link
             to="/favorites"
             className="relative flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
@@ -59,6 +78,31 @@ export default function Navbar({ itemCount, favoriteCount, onCartOpen }: NavbarP
               </span>
             )}
           </button>
+          {user ? (
+            <div className="flex items-center gap-2">
+              <Link
+                to="/profile"
+                className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                <User size={18} />
+                <span className="hidden sm:inline">{user.name}</span>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                <LogOut size={18} />
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+            >
+              <User size={18} />
+              <span className="hidden sm:inline">Sign in</span>
+            </Link>
+          )}
         </div>
       </div>
     </header>
