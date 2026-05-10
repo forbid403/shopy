@@ -1,6 +1,6 @@
 # Shopy
 
-An e-commerce shopping cart web application where users can register, browse products, manage a personal cart, and place orders. Admins can manage products and view all users' carts. Built as a single-page application with React and backed by a Node.js REST API with MongoDB.
+An e-commerce shopping cart web application where users can register, browse products, manage a personal cart, and place orders. Admins can manage products and view all users' shopping carts. Built as a single-page application with React and backed by a Node.js REST API with MongoDB.
 
 ## Tech Stack
 
