@@ -3,9 +3,9 @@ import toast from 'react-hot-toast'
 import { fetchCart, addToCart, updateCartItem, removeCartItem, checkout } from '../services/api'
 import type { Product, CartItem } from '../types'
 
-export function useCart() {
+export function useCart(authenticated: boolean) {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const load = useCallback(async () => {
@@ -22,8 +22,12 @@ export function useCart() {
   }, [])
 
   useEffect(() => {
-    load()
-  }, [load])
+    if (authenticated) {
+      load()
+    } else {
+      setCartItems([])
+    }
+  }, [authenticated, load])
 
   const addItem = async (product: Product): Promise<boolean> => {
     try {
