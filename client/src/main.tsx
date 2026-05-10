@@ -10,6 +10,7 @@ import CheckoutPage from './pages/CheckoutPage'
 import ManageProductsPage from './pages/ManageProductsPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import AdminPage from './pages/AdminPage'
 import { CartProvider } from './contexts/CartContext'
 import { FavoritesProvider } from './contexts/FavoritesContext'
 import { AuthProvider } from './contexts/AuthContext'
@@ -38,6 +39,10 @@ createRoot(document.getElementById('root')!).render(
                 <Route
                   path="/manage"
                   element={<ProtectedRoute adminOnly><ManageProductsPage /></ProtectedRoute>}
+                />
+                <Route
+                  path="/admin"
+                  element={<ProtectedRoute adminOnly><AdminPage /></ProtectedRoute>}
                 />
               </Route>
             </Routes>

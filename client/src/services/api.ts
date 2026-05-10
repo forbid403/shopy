@@ -53,6 +53,12 @@ interface AuthResponse {
   user: { _id: string; name: string; email: string; role: 'user' | 'admin' }
 }
 
+export const fetchAdminCarts = () => api.get('/admin/carts')
+
+export const fetchAdminUsers = () => api.get('/admin/users')
+
+export const deleteUser = (id: string) => api.delete(`/admin/users/${id}`)
+
 export const login = (email: string, password: string) =>
   api.post<AuthResponse>('/auth/login', { email, password })
 

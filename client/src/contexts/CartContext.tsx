@@ -1,12 +1,14 @@
 import { createContext, useContext } from 'react'
 import { useCart } from '../hooks/useCart'
+import { useAuthContext } from './AuthContext'
 
 type CartContextType = ReturnType<typeof useCart>
 
 const CartContext = createContext<CartContextType | null>(null)
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const cart = useCart()
+  const { user } = useAuthContext()
+  const cart = useCart(!!user)
   return <CartContext.Provider value={cart}>{children}</CartContext.Provider>
 }
 
