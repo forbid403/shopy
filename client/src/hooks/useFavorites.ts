@@ -2,16 +2,21 @@ import { useState, useEffect, useCallback } from 'react'
 import toast from 'react-hot-toast'
 import { fetchFavorites, addFavorite, removeFavorite } from '../services/api'
 
-export function useFavorites() {
+export function useFavorites(authenticated: boolean) {
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set())
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    if (!authenticated) {
+      setFavoriteIds(new Set())
+      return
+    }
+    setLoading(true)
     fetchFavorites()
       .then(({ data }) => setFavoriteIds(new Set(data)))
       .catch(() => {})
       .finally(() => setLoading(false))
-  }, [])
+  }, [authenticated])
 
   const toggle = useCallback(async (productId: string) => {
     const isFav = favoriteIds.has(productId)
