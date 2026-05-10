@@ -1,9 +1,13 @@
 import axios from 'axios'
-import type { ProductsResponse, CartItem } from '../types'
+import type { ProductsResponse, CartItem, Product } from '../types'
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL ?? '/api' })
 
-import type { Product } from '../types'
+api.interceptors.request.use((config) => {
+  const token = sessionStorage.getItem('token')
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
 
 export const fetchProducts = (params?: Record<string, string>) =>
   api.get<ProductsResponse>('/products', { params })
@@ -43,3 +47,14 @@ export const fetchFavoriteProducts = () => api.get<Product[]>('/favorites/produc
 export const addFavorite = (productId: string) => api.post(`/favorites/${productId}`)
 
 export const removeFavorite = (productId: string) => api.delete(`/favorites/${productId}`)
+
+interface AuthResponse {
+  token: string
+  user: { _id: string; name: string; email: string; role: 'user' | 'admin' }
+}
+
+export const login = (email: string, password: string) =>
+  api.post<AuthResponse>('/auth/login', { email, password })
+
+export const register = (name: string, email: string, password: string) =>
+  api.post<AuthResponse>('/auth/register', { name, email, password })
