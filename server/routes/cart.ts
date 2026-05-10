@@ -1,23 +1,25 @@
-import { Router, Request, Response } from 'express'
+import { Router, Response } from 'express'
 import mongoose from 'mongoose'
 import CartItem from '../models/Cart.js'
+import { authenticate, AuthRequest } from '../middleware/auth.js'
 
 const router = Router()
+router.use(authenticate)
 
 function isValidId(id: string) {
   return mongoose.Types.ObjectId.isValid(id)
 }
 
-router.get('/', async (_req: Request, res: Response) => {
+router.get('/', async (req: AuthRequest, res: Response) => {
   try {
-    const items = await CartItem.find()
+    const items = await CartItem.find({ userId: req.user!._id })
     res.json(items)
   } catch {
     res.status(500).json({ message: 'Failed to fetch cart' })
   }
 })
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req: AuthRequest, res: Response) => {
   try {
     const { productId, name, price, image, quantity } = req.body as {
       productId?: string
@@ -28,76 +30,92 @@ router.post('/', async (req: Request, res: Response) => {
     }
 
     if (!productId || !name || price === undefined || !image) {
-      return res.status(400).json({ message: 'productId, name, price, and image are required' })
+      res.status(400).json({ message: 'productId, name, price, and image are required' })
+      return
     }
 
     if (!isValidId(productId)) {
-      return res.status(400).json({ message: 'Invalid productId' })
+      res.status(400).json({ message: 'Invalid productId' })
+      return
     }
 
     if (typeof price !== 'number' || price < 0) {
-      return res.status(400).json({ message: 'price must be a non-negative number' })
+      res.status(400).json({ message: 'price must be a non-negative number' })
+      return
     }
 
-    const existing = await CartItem.findOne({ productId })
+    const existing = await CartItem.findOne({ userId: req.user!._id, productId })
     if (existing) {
       existing.quantity += quantity ?? 1
       await existing.save()
-      return res.json(existing)
+      res.json(existing)
+      return
     }
 
-    const item = await CartItem.create({ productId, name, price, image, quantity: quantity ?? 1 })
+    const item = await CartItem.create({ userId: req.user!._id, productId, name, price, image, quantity: quantity ?? 1 })
     res.status(201).json(item)
   } catch {
     res.status(500).json({ message: 'Failed to add to cart' })
   }
 })
 
-router.put('/:id', async (req: Request<{ id: string }>, res: Response) => {
+router.put('/:id', async (req: AuthRequest, res: Response) => {
   try {
     if (!isValidId(req.params.id)) {
-      return res.status(400).json({ message: 'Invalid id' })
+      res.status(400).json({ message: 'Invalid id' })
+      return
     }
 
     const { quantity } = req.body as { quantity?: number }
 
     if (quantity === undefined || typeof quantity !== 'number') {
-      return res.status(400).json({ message: 'quantity is required' })
+      res.status(400).json({ message: 'quantity is required' })
+      return
     }
 
     if (quantity < 1) {
-      await CartItem.findByIdAndDelete(req.params.id)
-      return res.json({ deleted: true })
+      await CartItem.findOneAndDelete({ _id: req.params.id, userId: req.user!._id })
+      res.json({ deleted: true })
+      return
     }
 
-    const item = await CartItem.findByIdAndUpdate(req.params.id, { quantity }, { new: true })
-    if (!item) return res.status(404).json({ message: 'Item not found' })
+    const item = await CartItem.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user!._id },
+      { quantity },
+      { new: true }
+    )
+    if (!item) {
+      res.status(404).json({ message: 'Item not found' })
+      return
+    }
     res.json(item)
   } catch {
     res.status(500).json({ message: 'Failed to update cart item' })
   }
 })
 
-router.delete('/:id', async (req: Request<{ id: string }>, res: Response) => {
+router.delete('/:id', async (req: AuthRequest, res: Response) => {
   try {
     if (!isValidId(req.params.id)) {
-      return res.status(400).json({ message: 'Invalid id' })
+      res.status(400).json({ message: 'Invalid id' })
+      return
     }
 
-    await CartItem.findByIdAndDelete(req.params.id)
+    await CartItem.findOneAndDelete({ _id: req.params.id, userId: req.user!._id })
     res.json({ message: 'Item removed' })
   } catch {
     res.status(500).json({ message: 'Failed to remove item' })
   }
 })
 
-router.post('/checkout', async (_req: Request, res: Response) => {
+router.post('/checkout', async (req: AuthRequest, res: Response) => {
   try {
-    const count = await CartItem.countDocuments()
+    const count = await CartItem.countDocuments({ userId: req.user!._id })
     if (count === 0) {
-      return res.status(400).json({ message: 'Cart is empty' })
+      res.status(400).json({ message: 'Cart is empty' })
+      return
     }
-    await CartItem.deleteMany({})
+    await CartItem.deleteMany({ userId: req.user!._id })
     res.json({ message: 'Order placed successfully' })
   } catch {
     res.status(500).json({ message: 'Checkout failed' })
