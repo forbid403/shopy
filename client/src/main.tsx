@@ -44,6 +44,7 @@ createRoot(document.getElementById('root')!).render(
                   path="/admin"
                   element={<ProtectedRoute adminOnly><AdminPage /></ProtectedRoute>}
                 />
+                <Route path="*" element={<div className="flex items-center justify-center min-h-screen text-gray-500">Page not found</div>} />
               </Route>
             </Routes>
           </FavoritesProvider>
