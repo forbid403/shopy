@@ -23,3 +23,28 @@ export interface CartItem {
   image: string
   quantity: number
 }
+
+export interface User {
+  _id: string
+  name: string
+  email: string
+  role: 'user' | 'admin'
+  createdAt: string
+}
+
+export interface OrderItem {
+  productId: string
+  name: string
+  price: number
+  quantity: number
+  image: string
+}
+
+export interface Order {
+  _id: string
+  items: OrderItem[]
+  total: number
+  shipping: { name: string; email: string; address: string; city: string; zip: string }
+  status: 'confirmed'
+  createdAt: string
+}

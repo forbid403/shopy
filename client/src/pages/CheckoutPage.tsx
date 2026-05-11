@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, CreditCard, CheckCircle2 } from 'lucide-react'
 import { handleImageError } from '../utils/fallbackImage'
 import { useCartContext } from '../contexts/CartContext'
+import { createOrder } from '../services/api'
+import toast from 'react-hot-toast'
 
 export default function CheckoutPage() {
   const { cartItems, total, placeOrder } = useCartContext()
@@ -40,9 +42,15 @@ export default function CheckoutPage() {
     e.preventDefault()
     if (!isValid || processing) return
     setProcessing(true)
-    const ok = await placeOrder()
-    setProcessing(false)
-    if (ok) setSuccess(true)
+    try {
+      await createOrder({ name: form.name, email: form.email, address: form.address, city: form.city, zip: form.zip })
+      placeOrder()
+      setSuccess(true)
+    } catch {
+      toast.error('Checkout failed. Please try again.')
+    } finally {
+      setProcessing(false)
+    }
   }
 
   if (success) {
@@ -55,12 +63,20 @@ export default function CheckoutPage() {
         <p className="mt-3 text-gray-500">
           Thank you for your purchase! Your order has been placed successfully.
         </p>
-        <Link
-          to="/"
-          className="mt-8 px-6 py-3 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-indigo-600 transition-colors"
-        >
-          Continue Shopping
-        </Link>
+        <div className="flex gap-3 mt-8">
+          <Link
+            to="/orders"
+            className="px-6 py-3 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-indigo-600 transition-colors"
+          >
+            View Orders
+          </Link>
+          <Link
+            to="/"
+            className="px-6 py-3 border border-gray-200 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            Continue Shopping
+          </Link>
+        </div>
       </main>
     )
   }

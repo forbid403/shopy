@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { ProductsResponse, CartItem, Product } from '../types'
+import type { ProductsResponse, CartItem, Product, Order } from '../types'
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL ?? '/api' })
 
@@ -52,6 +52,11 @@ interface AuthResponse {
   token: string
   user: { _id: string; name: string; email: string; role: 'user' | 'admin' }
 }
+
+export const fetchOrders = () => api.get<Order[]>('/orders')
+
+export const createOrder = (shipping: { name: string; email: string; address: string; city: string; zip: string }) =>
+  api.post<Order>('/orders', { shipping })
 
 export const fetchAdminCarts = () => api.get('/admin/carts')
 
