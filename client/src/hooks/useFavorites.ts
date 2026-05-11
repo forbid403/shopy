@@ -19,6 +19,10 @@ export function useFavorites(authenticated: boolean) {
   }, [authenticated])
 
   const toggle = useCallback(async (productId: string) => {
+    if (!authenticated) {
+      toast.error('Sign in to save favorites')
+      return
+    }
     const isFav = favoriteIds.has(productId)
 
     setFavoriteIds((prev) => {
