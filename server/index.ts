@@ -11,6 +11,7 @@ import favoriteRoutes from './routes/favorites.js'
 import uploadRoutes from './routes/upload.js'
 import authRoutes from './routes/auth.js'
 import adminRoutes from './routes/admin.js'
+import orderRoutes from './routes/orders.js'
 
 dotenv.config()
 
@@ -30,6 +31,7 @@ app.use('/api/admin', adminRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/cart', cartRoutes)
 app.use('/api/favorites', favoriteRoutes)
+app.use('/api/orders', orderRoutes)
 app.use('/api/upload', uploadRoutes)
 
 mongoose
