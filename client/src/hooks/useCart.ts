@@ -86,6 +86,8 @@ export function useCart(authenticated: boolean) {
     }
   }
 
+  const clearCart = () => setCartItems([])
+
   const placeOrder = async (): Promise<boolean> => {
     try {
       await checkout()
@@ -100,5 +102,5 @@ export function useCart(authenticated: boolean) {
   const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0)
   const itemCount = cartItems.reduce((sum, i) => sum + i.quantity, 0)
 
-  return { cartItems, loading, error, addItem, updateQuantity, removeItem, placeOrder, total, itemCount }
+  return { cartItems, loading, error, addItem, updateQuantity, removeItem, placeOrder, clearCart, total, itemCount }
 }

@@ -7,7 +7,7 @@ import { createOrder } from '../services/api'
 import toast from 'react-hot-toast'
 
 export default function CheckoutPage() {
-  const { cartItems, total, placeOrder } = useCartContext()
+  const { cartItems, total, clearCart } = useCartContext()
   const navigate = useNavigate()
   const [processing, setProcessing] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -44,7 +44,7 @@ export default function CheckoutPage() {
     setProcessing(true)
     try {
       await createOrder({ name: form.name, email: form.email, address: form.address, city: form.city, zip: form.zip })
-      placeOrder()
+      clearCart()
       setSuccess(true)
     } catch {
       toast.error('Checkout failed. Please try again.')
