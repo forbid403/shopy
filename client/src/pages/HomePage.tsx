@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import { useProducts } from '../hooks/useProducts'
 import { useCartContext } from '../contexts/CartContext'
 import { useFavoritesContext } from '../contexts/FavoritesContext'
-import { Search, Loader2 } from 'lucide-react'
+import { useAuthContext } from '../contexts/AuthContext'
+import { Search, Loader2, LogIn } from 'lucide-react'
 
 const CATEGORIES = ['All', 'Electronics', 'Sports', 'Home', 'Accessories']
 
@@ -12,6 +13,7 @@ export default function HomePage() {
   const { products, loading, loadingMore, error, category, setCategory, search, setSearch, total, loadMore } = useProducts()
   const { addItem } = useCartContext()
   const { isFavorite, toggle: toggleFavorite } = useFavoritesContext()
+  const { user } = useAuthContext()
   const navigate = useNavigate()
 
   const sentinelRef = useRef<HTMLDivElement>(null)
@@ -37,6 +39,20 @@ export default function HomePage() {
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {!user && (
+        <div className="mb-6 flex items-center justify-between gap-4 bg-indigo-50 border border-indigo-100 rounded-2xl px-5 py-4">
+          <div className="flex items-center gap-3">
+            <LogIn size={18} className="text-indigo-600 shrink-0" />
+            <p className="text-sm text-indigo-800">Sign in to save favorites and add items to your cart.</p>
+          </div>
+          <Link
+            to="/login"
+            className="shrink-0 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-1.5 rounded-full transition-colors"
+          >
+            Sign in
+          </Link>
+        </div>
+      )}
       <div className="mb-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Products</h1>

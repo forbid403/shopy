@@ -30,6 +30,10 @@ export function useCart(authenticated: boolean) {
   }, [authenticated, load])
 
   const addItem = async (product: Product): Promise<boolean> => {
+    if (!authenticated) {
+      toast.error('Sign in to add items to cart')
+      return false
+    }
     try {
       const { data } = await addToCart({
         productId: product._id,
