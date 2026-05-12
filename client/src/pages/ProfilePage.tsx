@@ -83,14 +83,6 @@ export default function ProfilePage() {
           <Heart size={18} className="text-gray-500" />
           <span className="text-sm font-medium text-gray-700">Favorites</span>
         </Link>
-
-        <Link
-          to="/"
-          className="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-5 py-4 hover:bg-gray-50 transition-colors"
-        >
-          <ShoppingBag size={18} className="text-gray-500" />
-          <span className="text-sm font-medium text-gray-700">Continue Shopping</span>
-        </Link>
       </div>
     </main>
   )
