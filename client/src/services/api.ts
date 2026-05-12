@@ -65,7 +65,7 @@ export const fetchAdminUsers = () => api.get('/admin/users')
 export const deleteUser = (id: string) => api.delete(`/admin/users/${id}`)
 
 export const login = (email: string, password: string) =>
-  api.post<AuthResponse>('/auth/login', { email, password })
+  api.post<AuthResponse>('/auth/login', { email, password: btoa(password) })
 
 export const register = (name: string, email: string, password: string) =>
-  api.post<AuthResponse>('/auth/register', { name, email, password })
+  api.post<AuthResponse>('/auth/register', { name, email, password: btoa(password) })

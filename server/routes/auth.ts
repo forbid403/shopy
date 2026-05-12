@@ -9,11 +9,12 @@ function signToken(payload: { _id: string; role: string }) {
 }
 
 router.post('/register', async (req: Request, res: Response) => {
-  const { name, email, password } = req.body
-  if (!name || !email || !password) {
+  const { name, email, password: encoded } = req.body
+  if (!name || !email || !encoded) {
     res.status(400).json({ message: 'All fields are required' })
     return
   }
+  const password = Buffer.from(encoded, 'base64').toString('utf8')
   if (password.length < 6) {
     res.status(400).json({ message: 'Password must be at least 6 characters' })
     return
@@ -31,11 +32,12 @@ router.post('/register', async (req: Request, res: Response) => {
 })
 
 router.post('/login', async (req: Request, res: Response) => {
-  const { email, password } = req.body
-  if (!email || !password) {
+  const { email, password: encoded } = req.body
+  if (!email || !encoded) {
     res.status(400).json({ message: 'Email and password are required' })
     return
   }
+  const password = Buffer.from(encoded, 'base64').toString('utf8')
 
   const user = await User.findOne({ email })
   if (!user || !(await user.comparePassword(password))) {
