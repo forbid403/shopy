@@ -2,6 +2,7 @@ import { Router, Response } from 'express'
 import mongoose from 'mongoose'
 import User from '../models/User.js'
 import CartItem from '../models/Cart.js'
+import Order from '../models/Order.js'
 import { authenticate, AuthRequest } from '../middleware/auth.js'
 import { requireAdmin } from '../middleware/requireAdmin.js'
 
@@ -36,30 +37,24 @@ router.delete('/users/:id', async (req: AuthRequest, res: Response) => {
   }
 })
 
-router.get('/carts', async (_req: AuthRequest, res: Response) => {
+router.get('/orders', async (_req: AuthRequest, res: Response) => {
   try {
+    const orders = await Order.find().sort({ createdAt: -1 }).lean()
     const users = await User.find().select('-password').lean()
-    const carts = await CartItem.find().lean()
 
-    const cartsByUser = carts.reduce<Record<string, typeof carts>>((acc, item) => {
-      const key = item.userId.toString()
-      if (!acc[key]) acc[key] = []
-      acc[key].push(item)
+    const userMap = users.reduce<Record<string, (typeof users)[0]>>((acc, u) => {
+      acc[u._id.toString()] = u
       return acc
     }, {})
 
-    const result = users.map((user) => ({
-      user,
-      cartItems: cartsByUser[user._id.toString()] ?? [],
-      total: (cartsByUser[user._id.toString()] ?? []).reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-      ),
+    const result = orders.map((order) => ({
+      ...order,
+      user: userMap[order.userId.toString()] ?? null,
     }))
 
     res.json(result)
   } catch {
-    res.status(500).json({ message: 'Failed to fetch carts' })
+    res.status(500).json({ message: 'Failed to fetch orders' })
   }
 })
 

@@ -28,7 +28,7 @@ An e-commerce shopping cart web application where users can register, browse pro
 - Checkout flow that creates a saved order record
 - Order history page showing past purchases
 - User profile page
-- Admin dashboard — view all users and their cart contents
+- Admin dashboard — view all users and their order history
 - Product management page — create, edit, delete products with image upload
 - Responsive design for mobile and desktop
 - Toast notifications for user actions
@@ -40,7 +40,6 @@ An e-commerce shopping cart web application where users can register, browse pro
 |--------|-----------|----------|
 | **User** | Create | `POST /api/auth/register` |
 | **User** | Read | `GET /api/admin/users` |
-| **User** | Update | `PUT /api/users/profile` |
 | **User** | Delete | `DELETE /api/admin/users/:id` |
 | **Product** | Create | `POST /api/products` |
 | **Product** | Read | `GET /api/products`, `GET /api/products/:id` |
@@ -187,7 +186,7 @@ After seeding, create an account then manually set `role: "admin"` in MongoDB, o
 | `server/routes/cart.ts` | Auth-scoped cart routes |
 | `server/models/Favorite.ts` | Added userId field |
 | `server/routes/favorites.ts` | Auth-scoped favorites routes |
-| `server/routes/admin.ts` | Admin endpoints (list users, list all carts) |
+| `server/routes/admin.ts` | Admin endpoints (list users, list all orders) |
 | `client/src/pages/AdminPage.tsx` | Admin dashboard UI |
 | `client/src/hooks/useCart.ts` | Cart hook update for auth |
 | `client/src/contexts/CartContext.tsx` | Cart context update for auth |

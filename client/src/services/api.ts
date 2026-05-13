@@ -58,7 +58,7 @@ export const fetchOrders = () => api.get<Order[]>('/orders')
 export const createOrder = (shipping: { name: string; email: string; address: string; city: string; zip: string }) =>
   api.post<Order>('/orders', { shipping })
 
-export const fetchAdminCarts = () => api.get('/admin/carts')
+export const fetchAdminOrders = () => api.get('/admin/orders')
 
 export const fetchAdminUsers = () => api.get('/admin/users')
 
