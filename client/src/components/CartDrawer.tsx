@@ -102,7 +102,8 @@ export default function CartDrawer({
                       <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
                       <button
                         onClick={() => onUpdateQuantity(item._id, item.quantity + 1)}
-                        className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                        disabled={item.quantity >= item.stock}
+                        className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
                       >
                         <Plus size={12} />
                       </button>

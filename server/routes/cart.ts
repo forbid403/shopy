@@ -1,6 +1,7 @@
 import { Router, Response } from 'express'
 import mongoose from 'mongoose'
 import CartItem from '../models/Cart.js'
+import Product from '../models/Product.js'
 import { authenticate, AuthRequest } from '../middleware/auth.js'
 
 const router = Router()
@@ -12,8 +13,14 @@ function isValidId(id: string) {
 
 router.get('/', async (req: AuthRequest, res: Response) => {
   try {
-    const items = await CartItem.find({ userId: req.user!._id })
-    res.json(items)
+    const items = await CartItem.find({ userId: req.user!._id }).lean()
+    const products = await Product.find({ _id: { $in: items.map((i) => i.productId) } }).select('stock').lean()
+    const stockMap = products.reduce<Record<string, number>>((acc, p) => {
+      acc[p._id.toString()] = p.stock
+      return acc
+    }, {})
+    const result = items.map((item) => ({ ...item, stock: stockMap[item.productId.toString()] ?? 0 }))
+    res.json(result)
   } catch {
     res.status(500).json({ message: 'Failed to fetch cart' })
   }
@@ -44,15 +51,29 @@ router.post('/', async (req: AuthRequest, res: Response) => {
       return
     }
 
+    const product = await Product.findById(productId)
+    if (!product) {
+      res.status(404).json({ message: 'Product not found' })
+      return
+    }
+
     const existing = await CartItem.findOne({ userId: req.user!._id, productId })
+    const currentQty = existing ? existing.quantity : 0
+    const addQty = quantity ?? 1
+
+    if (currentQty + addQty > product.stock) {
+      res.status(400).json({ message: `Only ${product.stock - currentQty} left in stock` })
+      return
+    }
+
     if (existing) {
-      existing.quantity += quantity ?? 1
+      existing.quantity += addQty
       await existing.save()
       res.json(existing)
       return
     }
 
-    const item = await CartItem.create({ userId: req.user!._id, productId, name, price, image, quantity: quantity ?? 1 })
+    const item = await CartItem.create({ userId: req.user!._id, productId, name, price, image, quantity: addQty })
     res.status(201).json(item)
   } catch {
     res.status(500).json({ message: 'Failed to add to cart' })
