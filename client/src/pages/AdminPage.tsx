@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Trash2, ChevronDown, ChevronUp, Package } from 'lucide-react'
-import { fetchAdminOrders, deleteUser } from '../services/api'
+import { XCircle, ChevronDown, ChevronUp, Package } from 'lucide-react'
+import { fetchAdminOrders, cancelOrder } from '../services/api'
 import { handleImageError } from '../utils/fallbackImage'
 import toast from 'react-hot-toast'
 
@@ -43,14 +43,14 @@ export default function AdminPage() {
     })
   }
 
-  async function handleDeleteUser(userId: string, userName: string) {
-    if (!confirm(`Delete user "${userName}"? This cannot be undone.`)) return
+  async function handleCancelOrder(orderId: string) {
+    if (!confirm('Cancel this order? Stock will be restored.')) return
     try {
-      await deleteUser(userId)
-      setOrders((prev) => prev.filter((o) => o.user?._id !== userId))
-      toast.success('User deleted')
+      const { data } = await cancelOrder(orderId)
+      setOrders((prev) => prev.map((o) => o._id === orderId ? { ...o, status: data.status } : o))
+      toast.success('Order cancelled')
     } catch {
-      toast.error('Failed to delete user')
+      toast.error('Failed to cancel order')
     }
   }
 
@@ -114,12 +114,15 @@ export default function AdminPage() {
                       <span>{order.items.length} items · ${order.total.toFixed(2)}</span>
                       {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                     </button>
-                    {order.user && (
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${order.status === 'cancelled' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-700'}`}>
+                      {order.status}
+                    </span>
+                    {order.status === 'confirmed' && (
                       <button
-                        onClick={() => handleDeleteUser(order.user!._id, order.user!.name)}
+                        onClick={() => handleCancelOrder(order._id)}
                         className="p-1.5 text-gray-400 hover:text-red-600 transition-colors"
                       >
-                        <Trash2 size={16} />
+                        <XCircle size={16} />
                       </button>
                     )}
                   </div>

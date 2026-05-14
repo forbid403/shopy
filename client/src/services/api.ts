@@ -60,6 +60,8 @@ export const createOrder = (shipping: { name: string; email: string; address: st
 
 export const fetchAdminOrders = () => api.get('/admin/orders')
 
+export const cancelOrder = (id: string) => api.delete(`/admin/orders/${id}`)
+
 export const fetchAdminUsers = () => api.get('/admin/users')
 
 export const deleteUser = (id: string) => api.delete(`/admin/users/${id}`)
