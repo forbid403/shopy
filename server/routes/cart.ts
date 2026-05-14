@@ -69,12 +69,12 @@ router.post('/', async (req: AuthRequest, res: Response) => {
     if (existing) {
       existing.quantity += addQty
       await existing.save()
-      res.json(existing)
+      res.json({ ...existing.toObject(), stock: product.stock })
       return
     }
 
     const item = await CartItem.create({ userId: req.user!._id, productId, name, price, image, quantity: addQty })
-    res.status(201).json(item)
+    res.status(201).json({ ...item.toObject(), stock: product.stock })
   } catch {
     res.status(500).json({ message: 'Failed to add to cart' })
   }
