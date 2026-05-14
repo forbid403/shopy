@@ -1,6 +1,7 @@
 import { Router, Response } from 'express'
 import CartItem from '../models/Cart.js'
 import Order from '../models/Order.js'
+import Product from '../models/Product.js'
 import { authenticate, AuthRequest } from '../middleware/auth.js'
 
 const router = Router()
@@ -46,6 +47,12 @@ router.post('/', async (req: AuthRequest, res: Response) => {
       total,
       shipping,
     })
+
+    await Promise.all(
+      cartItems.map((item) =>
+        Product.findByIdAndUpdate(item.productId, { $inc: { stock: -item.quantity } })
+      )
+    )
 
     await CartItem.deleteMany({ userId: req.user!._id })
 

@@ -11,7 +11,7 @@ function isValidId(id: string) {
 router.get('/', async (req: Request, res: Response) => {
   try {
     const { category, search, page = '1', limit = '12' } = req.query as Record<string, string>
-    const filter: Record<string, unknown> = {}
+    const filter: Record<string, unknown> = { stock: { $gt: 0 } }
     if (category && category !== 'All') filter.category = category
     if (search) filter.name = { $regex: search, $options: 'i' }
 
