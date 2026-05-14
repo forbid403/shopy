@@ -92,7 +92,9 @@ export default function OrderHistoryPage() {
                 <div className="flex items-center gap-3">
                   <div className="text-right">
                     <p className="font-semibold text-gray-900 text-sm">${order.total.toFixed(2)}</p>
-                    <span className="text-xs text-green-600 font-medium">{order.status}</span>
+                    <span className={`text-xs font-medium ${order.status === 'cancelled' ? 'text-red-500' : 'text-green-600'}`}>
+                      {order.status}
+                    </span>
                   </div>
                   {open ? <ChevronUp size={16} className="text-gray-400" /> : <ChevronDown size={16} className="text-gray-400" />}
                 </div>

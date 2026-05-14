@@ -13,7 +13,7 @@ export interface IOrder extends Document {
   items: OrderItem[]
   total: number
   shipping: { name: string; email: string; address: string; city: string; zip: string }
-  status: 'confirmed'
+  status: 'confirmed' | 'cancelled'
 }
 
 const orderSchema = new Schema<IOrder>(
@@ -36,7 +36,7 @@ const orderSchema = new Schema<IOrder>(
       city: { type: String, required: true },
       zip: { type: String, required: true },
     },
-    status: { type: String, default: 'confirmed' },
+    status: { type: String, enum: ['confirmed', 'cancelled'], default: 'confirmed' },
   },
   { timestamps: true }
 )

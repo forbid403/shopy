@@ -46,6 +46,6 @@ export interface Order {
   items: OrderItem[]
   total: number
   shipping: { name: string; email: string; address: string; city: string; zip: string }
-  status: 'confirmed'
+  status: 'confirmed' | 'cancelled'
   createdAt: string
 }
