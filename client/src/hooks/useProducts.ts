@@ -9,10 +9,16 @@ export function useProducts() {
   const [error, setError] = useState<string | null>(null)
   const [category, setCategory] = useState('All')
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [hasMore, setHasMore] = useState(true)
   const [total, setTotal] = useState(0)
   const pageRef = useRef(1)
   const loadingRef = useRef(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(timer)
+  }, [search])
 
   const load = useCallback(async (pageNum: number, append: boolean) => {
     if (loadingRef.current) return
@@ -28,7 +34,7 @@ export function useProducts() {
     try {
       const params: Record<string, string> = { page: String(pageNum), limit: '12' }
       if (category !== 'All') params.category = category
-      if (search) params.search = search
+      if (debouncedSearch) params.search = debouncedSearch
       const { data } = await fetchProducts(params)
 
       setProducts((prev) => append ? [...prev, ...data.products] : data.products)
@@ -42,7 +48,7 @@ export function useProducts() {
       setLoadingMore(false)
       loadingRef.current = false
     }
-  }, [category, search])
+  }, [category, debouncedSearch])
 
   useEffect(() => {
     pageRef.current = 1
