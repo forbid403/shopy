@@ -157,6 +157,9 @@ After seeding, create an account then manually set `role: "admin"` in MongoDB, o
 
 ## Team & Workload Allocation
 
+This project was initially developed by forbid403 as Assignment 1. For Assignment 2, noey-bing and CokanZero joined the team to extend the application with user authentication, per-user cart and favorites, order management, and an admin dashboard.
+
+
 | Member | GitHub | Responsibilities |
 |--------|--------|-----------------|
 | forbid403 | [@forbid403](https://github.com/forbid403) | Authentication backend + frontend |
