@@ -160,11 +160,11 @@ After seeding, create an account then manually set `role: "admin"` in MongoDB, o
 This project was initially developed by forbid403 as Assignment 1. For Assignment 2, noey-bing and CokanZero joined the team to extend the application with user authentication, per-user cart and favorites, order management, and an admin dashboard.
 
 
-| Member | GitHub | Responsibilities |
-|--------|--------|-----------------|
-| forbid403 | [@forbid403](https://github.com/forbid403) | Authentication backend + frontend |
-| noey-bing | [@noey-bing](https://github.com/noey-bing) | Cart ownership, favorites, admin dashboard |
-| CokanZero | [@CokanZero](https://github.com/CokanZero) | Orders, profile, routing, README, DB export |
+| Member | Student ID | GitHub | Responsibilities |
+|--------|-----------|--------|-----------------|
+| forbid403 | 25677218 | [@forbid403](https://github.com/forbid403) | Authentication backend + frontend |
+| noey-bing | 25414222 | [@noey-bing](https://github.com/noey-bing) | Cart ownership, favorites, admin dashboard |
+| CokanZero | 25601434 | [@CokanZero](https://github.com/CokanZero) | Orders, profile, routing, README, DB export |
 
 ### forbid403
 
